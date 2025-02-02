@@ -40,3 +40,4 @@ commitlint.config.ts
 eslint.config.mjs
 tsconfig.build.json
 tsconfig.json
+*.tsbuildinfo

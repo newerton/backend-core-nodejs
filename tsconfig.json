@@ -8,11 +8,9 @@
     "esModuleInterop": true
   },
   "include": [
-    "./src",
-    "./commitlint.config.ts"
+    "./src"
   ],
   "exclude": [
-    "node_modules",
-    "dist"
+    "node_modules"
   ]
 }
