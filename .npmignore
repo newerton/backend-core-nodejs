@@ -30,3 +30,13 @@ docs
 karma.sauce.conf.js
 .github
 .releaserc
+.history/
+.husky/
+.editorconfig
+.lintstagedrc.mjs
+.prettierrc
+.prettier
+commitlint.config.ts
+eslint.config.mjs
+tsconfig.build.json
+tsconfig.json
