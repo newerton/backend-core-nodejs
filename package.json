@@ -1,6 +1,6 @@
 {
   "name": "@newerton/backend-core-nodejs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "publishConfig": {
     "access": "public",
     "registry": "https://npm.pkg.github.com"
