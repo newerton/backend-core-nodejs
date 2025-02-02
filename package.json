@@ -1,6 +1,6 @@
 {
   "name": "@newerton/backend-core-nodejs",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -29,6 +29,9 @@
     "url": "git+https://github.com/newerton/backend-core-nodejs.git",
     "directory": "packages/backend-core-nodejs"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "clean": "rimraf dist",
     "tscBuild": "tsc --build --force",

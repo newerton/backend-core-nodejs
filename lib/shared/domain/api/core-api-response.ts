@@ -1,0 +1,40 @@
+import { Code } from '../errors/code';
+
+export class CoreApiResponse<T> {
+  public readonly code: number;
+
+  public readonly error: string;
+
+  public readonly message: string;
+
+  public readonly details: T[];
+
+  private constructor(
+    code: number,
+    error: string,
+    message: string,
+    details?: any[],
+  ) {
+    this.code = code;
+    this.error = error;
+    this.message = message;
+    this.details = (details as T[]) || [];
+  }
+
+  static success(data?: unknown) {
+    return data;
+  }
+
+  static error<T>(
+    code?: number,
+    error?: string,
+    message?: string,
+    details?: any[],
+  ): CoreApiResponse<T> {
+    const resultCode: number = code || Code.INTERNAL_SERVER_ERROR.code;
+    const resultError: string = error || Code.INTERNAL_SERVER_ERROR.error;
+    const resultMessage: string = message || Code.INTERNAL_SERVER_ERROR.message;
+
+    return new CoreApiResponse(resultCode, resultError, resultMessage, details);
+  }
+}
