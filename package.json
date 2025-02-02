@@ -1,14 +1,14 @@
 {
   "name": "@newerton/backend-core-nodejs",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "version": "1.0.2",
   "publishConfig": {
+    "access": "public",
     "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/newerton/backend-core-nodejs.git"
+    "url": "git+https://github.com/newerton/backend-core-nodejs.git",
+    "directory": "packages/backend-core-nodejs"
   },
   "scripts": {
     "clean": "rimraf dist",
@@ -28,7 +28,8 @@
     "dotenv": "^16.4.7",
     "env-var": "^7.5.0",
     "pino-http": "^10.4.0",
-    "pino-pretty": "^13.0.0"
+    "pino-pretty": "^13.0.0",
+    "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.6.1",

@@ -1,16 +1,30 @@
 {
   "compilerOptions": {
+    "composite": true,
     "module": "commonjs",
-    "target": "ES2022",
     "declaration": true,
-    "outDir": "./dist",
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "noUnusedLocals": false,
+    "importHelpers": true,
+    "removeComments": false,
+    "noLib": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "useUnknownInCatchVariables": false,
+    "target": "ES2021",
+    "sourceMap": false,
+    "allowJs": false,
     "strict": true,
-    "esModuleInterop": true
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "strictPropertyInitialization": false,
+    "types": ["node"],
+    "outDir": ".",
+    "rootDir": "."
   },
-  "include": [
-    "./src"
-  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "commitlint.config.ts"
   ]
 }

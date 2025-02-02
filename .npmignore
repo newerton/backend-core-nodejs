@@ -41,4 +41,11 @@ eslint.config.mjs
 tsconfig.build.json
 tsconfig.json
 *.tsbuildinfo
-index.ts
+
+# source
+**/*.ts
+*.ts
+
+# definitions
+!**/*.d.ts
+!*.d.ts

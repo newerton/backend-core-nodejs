@@ -6,6 +6,8 @@
 yarn.lock
 tsconfig.build.tsbuildinfo
 tsconfig.tsbuildinfo
+*.d.ts
+shared/**/*.js
 
 # Logs
 logs
