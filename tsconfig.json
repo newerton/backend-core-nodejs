@@ -1,17 +1,17 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "module": "commonjs",
+    "module": "CommonJS",
     "target": "ES2022",
     "declaration": true,
     "outDir": "./dist",
-    "rootDir": ".",
+    "rootDir": "./lib",
     "strict": true,
     "esModuleInterop": true,
     "paths": {
       "@newerton/backend-core-nodejs/*": ["./*"]
     }
   },
-  "include": ["**/*.ts"],
+  "include": ["lib/**/*.ts"],
   "exclude": ["node_modules", "dist", "commitlint.config.ts"]
 }

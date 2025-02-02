@@ -8,6 +8,7 @@ tsconfig.build.tsbuildinfo
 tsconfig.tsbuildinfo
 *.d.ts
 shared/**/*.js
+*.tgz
 
 # Logs
 logs

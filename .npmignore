@@ -14,6 +14,7 @@ coverage
 
 # dev
 src
+lib
 test
 types
 build
@@ -42,10 +43,4 @@ tsconfig.build.json
 tsconfig.json
 *.tsbuildinfo
 
-# source
-**/*.ts
-*.ts
 
-# definitions
-!**/*.d.ts
-!*.d.ts
