@@ -1,6 +1,25 @@
 {
   "name": "@newerton/backend-core-nodejs",
   "version": "1.0.3",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./shared": {
+      "import": "./dist/shared/index.js",
+      "require": "./dist/shared/index.js",
+      "types": "./dist/shared/index.d.ts"
+    },
+    "./shared/domain/exceptions": {
+      "import": "./dist/shared/domain/exceptions/index.js",
+      "require": "./dist/shared/domain/exceptions/index.js",
+      "types": "./dist/shared/domain/exceptions/index.d.ts"
+    }
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://npm.pkg.github.com"
@@ -28,8 +47,7 @@
     "dotenv": "^16.4.7",
     "env-var": "^7.5.0",
     "pino-http": "^10.4.0",
-    "pino-pretty": "^13.0.0",
-    "reflect-metadata": "^0.2.2"
+    "pino-pretty": "^13.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.6.1",

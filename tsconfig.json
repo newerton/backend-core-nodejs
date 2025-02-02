@@ -4,13 +4,14 @@
     "module": "commonjs",
     "target": "ES2022",
     "declaration": true,
-    "outDir": ".",
+    "outDir": "./dist",
     "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
+    "paths": {
+      "@newerton/backend-core-nodejs/*": ["./*"]
+    }
   },
-  "exclude": [
-    "node_modules",
-    "commitlint.config.ts"
-  ]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist", "commitlint.config.ts"]
 }
