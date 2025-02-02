@@ -9,10 +9,10 @@
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./shared": {
-      "import": "./dist/shared/index.js",
-      "require": "./dist/shared/index.js",
-      "types": "./dist/shared/index.d.ts"
+    "./shared/domain/errors": {
+      "import": "./dist/shared/domain/errors/index.js",
+      "require": "./dist/shared/domain/errors/index.js",
+      "types": "./dist/shared/domain/errors/index.d.ts"
     },
     "./shared/domain/exceptions": {
       "import": "./dist/shared/domain/exceptions/index.js",
@@ -71,5 +71,11 @@
     "rimraf": "^6.0.1",
     "typescript": "^5.0.0",
     "typescript-eslint": "^8.22.0"
+  },
+  "typesVersions": {
+    "*": {
+      "shared/domain/errors": ["./dist/shared/domain/errors/index.d.ts"],
+      "shared/domain/exceptions": ["./dist/shared/domain/exceptions/index.d.ts"]
+    }
   }
 }
