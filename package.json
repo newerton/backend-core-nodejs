@@ -1,5 +1,5 @@
 {
-  "name": "prisma-helpers",
+  "name": "@newerton/prisma-helpers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "version": "1.0.0",
@@ -11,15 +11,37 @@
     "url": "git+https://github.com/newerton/prisma-helpers.git"
   },
   "scripts": {
-    "build": "tsc",
-    "prepublish": "npm run build"
+    "clean": "rimraf dist",
+    "tscBuild": "tsc --build --force",
+    "build": "npm run clean && npm run tscBuild",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\" --fix",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags",
+    "prepare": "husky && npm run build"
   },
   "dependencies": {
     "@prisma/client": "^5.9.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
+    "@typescript-eslint/eslint-plugin": "^8.22.0",
+    "@typescript-eslint/parser": "^8.22.0",
+    "eslint": "^9.19.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-import-resolver-typescript": "^3.7.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "husky": "^9.1.7",
+    "prettier": "^3.4.2",
+    "prisma": "^5.9.1",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.22.0"
   }
-  
 }
