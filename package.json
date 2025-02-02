@@ -1,0 +1,25 @@
+{
+  "name": "prisma-helpers",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "version": "1.0.0",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/newerton/prisma-helpers.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "npm run build"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+  
+}
