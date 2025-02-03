@@ -3,7 +3,7 @@ import { Options } from 'pino-http';
 import { Exception } from '../../domain/exceptions/exception';
 import { ApiServerConfig } from '../configs/env';
 
-export const pinoHttoLogging: Options = {
+export const pinoHttpLogging: Options = {
   name: `pino-logger`,
   level: ApiServerConfig.ENV !== 'production' ? 'debug' : 'info',
   customLogLevel: (_, res, err?: Error) => {
