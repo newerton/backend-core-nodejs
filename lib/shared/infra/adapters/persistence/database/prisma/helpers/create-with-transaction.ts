@@ -3,32 +3,41 @@ import { PrismaClient } from '@prisma/client';
 import { Code } from '../../../../../../domain/errors/code';
 import { Exception } from '../../../../../../domain/exceptions/exception';
 
-type PrismaCreateWithTransactionHandlerProps = {
+type Model = {
+  create: (args: Record<string, unknown>) => Promise<Record<string, unknown>>;
+};
+
+type PrismaCreateWithTransactionHandlerProps<TModel extends Model> = {
   tx?: PrismaClient;
-  model: PrismaClient;
+  modelName: string;
+  model: TModel;
   args: Record<string, unknown>;
   errorMessage: string;
 };
 
 /**
- * Helper para lidar com transações no Prisma usando TypeScript.
+ * Helper to create a record in the database using a transaction.
  *
- * @param PrismaCreateWithTransactionHandlerProps Parâmetros da transação
- * @returns O resultado da operação Prisma.
+ * @param PrismaCreateWithTransactionHandlerProps Transaction handler properties.
+ * @returns Result of the create operation.
  */
-export async function prismaCreateWithTransactionHandler<T>({
+export async function prismaCreateWithTransactionHandler<
+  TModel extends Model,
+  TOutput,
+>({
   tx,
+  modelName,
   model,
   args,
   errorMessage,
-}: PrismaCreateWithTransactionHandlerProps): Promise<T> {
+}: PrismaCreateWithTransactionHandlerProps<TModel>): Promise<TOutput> {
   try {
     if (tx) {
-      const result = await tx[model].create(args);
-      return result as T;
+      const result = await tx[modelName].create(args);
+      return result as TOutput;
     }
     const result = await model.create(args);
-    return result as T;
+    return result as TOutput;
   } catch (error) {
     throw Exception.new({
       code: Code.INTERNAL_SERVER_ERROR.code,
