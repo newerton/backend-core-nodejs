@@ -6,16 +6,24 @@
   "types": "dist/index.d.ts",
   "typesVersions": {
     "*": {
-      "shared/*": [
-        "./dist/shared/*/index.d.ts"
+      "core/*": [
+        "./dist/core/*/index.d.ts"
+      ],
+      "nestjs/*": [
+        "./dist/nestjs/*/index.d.ts"
       ]
     }
   },
   "exports": {
-    "./shared/*": {
-      "types": "./dist/shared/*/index.d.ts",
-      "require": "./dist/shared/*/index.js",
-      "import": "./dist/shared/*/index.js"
+    "./core/*": {
+      "types": "./dist/core/*/index.d.ts",
+      "require": "./dist/core/*/index.js",
+      "import": "./dist/core/*/index.js"
+    },
+    "./nestjs/*": {
+      "types": "./dist/nestjs/*/index.d.ts",
+      "require": "./dist/nestjs/*/index.js",
+      "import": "./dist/nestjs/*/index.js"
     }
   },
   "publishConfig": {
@@ -40,12 +48,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@prisma/client": "^5.9.1",
-    "bcrypt": "^5.1.1",
-    "dotenv": "^16.4.7",
-    "env-var": "^7.5.0",
-    "pino-http": "^10.4.0",
-    "pino-pretty": "^13.0.0"
+    "bcrypt": "^5.1.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.6.1",
@@ -68,5 +71,21 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.0",
     "typescript-eslint": "^8.22.0"
+  },
+  "peerDependencies": {
+    "@nestjs/cache-manager": "^3.0.0",
+    "@nestjs/common": "^11.0.6",
+    "@nestjs/core": "^11.0.6",
+    "@nestjs/platform-express": "^11.0.6",
+    "@prisma/client": "^5.9.1",
+    "cache-manager": "^6.4.0",
+    "class-transformer": "*",
+    "class-validator": "*",
+    "dotenv": "^16.4.7",
+    "env-var": "^7.5.0",
+    "pino-http": "^10.4.0",
+    "pino-pretty": "^13.0.0",
+    "reflect-metadata": "^0.1.12 || ^0.2.0",
+    "zod": "^3.24.1"
   }
 }

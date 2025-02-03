@@ -1,2 +1,2 @@
-export * as SharedDomain from './shared/domain';
-export * as SharedInfra from './shared/infra';
+export * as Core from './core';
+export * as NestJs from './nestjs';
