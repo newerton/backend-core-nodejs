@@ -1,4 +1,4 @@
-interface PrismaError extends Error {
+export interface PrismaError extends Error {
   code: string;
 }
 
