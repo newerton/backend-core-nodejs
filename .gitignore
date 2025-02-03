@@ -5,8 +5,6 @@
 yarn.lock
 tsconfig.build.tsbuildinfo
 tsconfig.tsbuildinfo
-*.d.ts
-LIB/**/*.js
 *.tgz
 
 # Logs

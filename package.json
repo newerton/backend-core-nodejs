@@ -1,23 +1,21 @@
 {
   "name": "@newerton/backend-core-nodejs",
   "version": "1.0.6",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "author": "Newerton",
+  "license": "MIT",
+  "types": "dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "shared/*": [
+        "./dist/shared/*/index.d.ts"
+      ]
+    }
+  },
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./shared/domain/errors": {
-      "import": "./dist/shared/domain/errors/index.js",
-      "require": "./dist/shared/domain/errors/index.js",
-      "types": "./dist/shared/domain/errors/index.d.ts"
-    },
-    "./shared/domain/exceptions": {
-      "import": "./dist/shared/domain/exceptions/index.js",
-      "require": "./dist/shared/domain/exceptions/index.js",
-      "types": "./dist/shared/domain/exceptions/index.d.ts"
+    "./shared/*": {
+      "types": "./dist/shared/*/index.d.ts",
+      "require": "./dist/shared/*/index.js",
+      "import": "./dist/shared/*/index.js"
     }
   },
   "publishConfig": {
@@ -29,9 +27,6 @@
     "url": "git+https://github.com/newerton/backend-core-nodejs.git",
     "directory": "packages/backend-core-nodejs"
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "clean": "rimraf dist",
     "tscBuild": "tsc --build --force",
@@ -42,7 +37,9 @@
     "preversion": "npm run lint",
     "version": "npm run format && git add -A lib",
     "postversion": "git push && git push --tags",
-    "prepare": "husky && npm run build"
+    "check:types": "tsc --noEmit",
+    "check:paths": "tsc --traceResolution",
+    "prepare": "husky"
   },
   "dependencies": {
     "@prisma/client": "^5.9.1",
@@ -66,20 +63,12 @@
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-unused-imports": "^4.1.4",
     "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
     "prettier": "^3.4.2",
     "prisma": "^5.9.1",
     "rimraf": "^6.0.1",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.0",
     "typescript-eslint": "^8.22.0"
-  },
-  "typesVersions": {
-    "*": {
-      "shared/domain/errors": [
-        "./dist/shared/domain/errors/index.d.ts"
-      ],
-      "shared/domain/exceptions": [
-        "./dist/shared/domain/exceptions/index.d.ts"
-      ]
-    }
   }
 }
