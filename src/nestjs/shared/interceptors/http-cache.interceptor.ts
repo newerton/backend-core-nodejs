@@ -14,7 +14,6 @@ export class HttpCacheInterceptor extends CacheInterceptor {
       return `${cacheKey}-${request._parsedUrl.query}`;
     }
 
-    const superTrackBy = super.trackBy(context);
-    return superTrackBy ? String(superTrackBy) : null;
+    return super.trackBy(context);
   }
 }

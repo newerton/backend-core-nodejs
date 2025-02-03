@@ -7,7 +7,7 @@ import unusedImports from "eslint-plugin-unused-imports";
 
 export default tseslint.config(
   {
-    ignores: ['eslint.config.mjs', '.history', 'node_modules', "**/*.d.ts"],
+    ignores: ['eslint.config.mjs', 'index.js', 'index.d.ts', 'index.ts'],
   },
   {
     plugins: {

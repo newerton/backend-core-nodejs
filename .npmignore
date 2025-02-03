@@ -1,46 +1,21 @@
-# OSX
-.DS_Store
-
-# IDE
-.idea
-
-# npm
-node_modules
-yarn.lock
-package-lock.json
-
-# jest
-coverage
-
-# dev
+# source
 src
-lib
-test
-types
-build
-babel.config.js
-prettier.config.js
-.eslintrc.json
+index.ts
+package-lock.json
+tslint.json
+tsconfig.json
+.prettierrc
+
+# misc
 .commitlintrc.json
+.release-it.json
+.eslintignore
+.eslintrc.js
 *.tgz
 
-#doc
-CONTRIBUTING.md
-docs
-
-#other
-.travis.yml
-karma.sauce.conf.js
-.github
-.releaserc
-.history/
-.husky/
+# IDE
+.history
+.husky
 .editorconfig
 .lintstagedrc.mjs
-.prettierrc
-.prettier
-commitlint.config.ts
 eslint.config.mjs
-tsconfig.build.json
-tsconfig.json
-*.tsbuildinfo
