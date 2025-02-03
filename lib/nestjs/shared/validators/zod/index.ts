@@ -1,2 +1,2 @@
-export * as validations from './validations';
-export * from './create-schema.interface';
+export * from './validations';
+export * from './schemas';

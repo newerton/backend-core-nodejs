@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { CreateValidationSchema } from '../create-schema.interface';
+import { CreateValidationSchema } from '../schemas';
 
 export class UUIDSchemaValidation implements CreateValidationSchema {
   createSchema(): z.Schema {

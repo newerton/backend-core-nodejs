@@ -1,1 +1,1 @@
-export * from './zod';
+export * as zod from './zod';

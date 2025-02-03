@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Schema, ZodError } from 'zod';
 
-import { CreateValidationSchema } from '../validators/zod/create-schema.interface';
+import { CreateValidationSchema } from '../validators/zod';
 
 export type ZodValidationType = {
   message: string;
