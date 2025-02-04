@@ -1,1 +1,2 @@
-export * from './hash-provider';
+export { CacheProvider } from './cache-provider';
+export { HashProvider } from './hash-provider';

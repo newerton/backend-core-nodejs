@@ -1,1 +1,2 @@
-export * from './idp-di-tokens';
+export { CacheDITokens } from './cache-di-tokens';
+export { IDPDITokens } from './idp-di-tokens';

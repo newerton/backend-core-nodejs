@@ -15,6 +15,9 @@
       "core/shared/infra/configs/env/aws/aws-server-config": [
         "./dist/core/shared/infra/configs/env/aws/aws-server-config.d.ts"
       ],
+      "core/shared/infra/configs/env/cache/cache-server-config": [
+        "./dist/core/shared/infra/configs/env/cache/cache-server-config.d.ts"
+      ],
       "core/shared/infra/configs/env/database/database-server-config": [
         "./dist/core/shared/infra/configs/env/database/database-server-config.d.ts"
       ],
@@ -47,6 +50,11 @@
       "types": "./dist/core/shared/infra/configs/env/aws/aws-server-config.d.ts",
       "require": "./dist/core/shared/infra/configs/env/aws/aws-server-config.js",
       "import": "./dist/core/shared/infra/configs/env/aws/aws-server-config.js"
+    },
+    "./core/shared/infra/configs/env/cache/cache-server-config": {
+      "types": "./dist/core/shared/infra/configs/env/cache/cache-server-config.d.ts",
+      "require": "./dist/core/shared/infra/configs/env/cache/cache-server-config.js",
+      "import": "./dist/core/shared/infra/configs/env/cache/cache-server-config.js"
     },
     "./core/shared/infra/configs/env/database/database-server-config": {
       "types": "./dist/core/shared/infra/configs/env/database/database-server-config.d.ts",
