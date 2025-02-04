@@ -10,7 +10,7 @@ import { Request, Response } from 'express';
 import { CoreApiResponse } from '../../../../core/shared/domain/api';
 import { Code, CodeDescription } from '../../../../core/shared/domain/errors';
 import { Exception } from '../../../../core/shared/domain/exceptions';
-import { ApiServerConfig } from '../../../../core/shared/infra/configs';
+import { ApiServerConfig } from '../../../../core/shared/infra/configs/env/api/api-server-config';
 
 type HttpExceptionFilterProperties = Error &
   CodeDescription & {

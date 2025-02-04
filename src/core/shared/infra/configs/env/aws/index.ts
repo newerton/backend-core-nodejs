@@ -1,2 +1,2 @@
-export * from './aws-s3-server-config';
-export * from './aws-server-config';
+export { AWSS3ServerConfig } from './aws-s3-server-config';
+export { AWSServerConfig } from './aws-server-config';

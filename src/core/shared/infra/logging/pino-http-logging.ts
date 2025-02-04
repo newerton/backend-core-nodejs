@@ -1,7 +1,7 @@
 import { Options } from 'pino-http';
 
 import { Exception } from '../../domain/exceptions/exception';
-import { ApiServerConfig } from '../configs/env';
+import { ApiServerConfig } from '../configs/env/api/api-server-config';
 
 export const pinoHttpLogging: Options = {
   name: `pino-logger`,

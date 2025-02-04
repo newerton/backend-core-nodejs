@@ -1,4 +1,4 @@
-import { env } from './init';
+import { env } from '../init';
 
 export class ApiServerConfig {
   public static readonly ENV: string = env

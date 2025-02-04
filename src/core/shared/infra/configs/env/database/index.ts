@@ -1,2 +1,2 @@
-export * from './database-server-config';
-export * from './redis-server-config';
+export { DatabaseServerConfig } from './database-server-config';
+export { RedisServerConfig } from './redis-server-config';

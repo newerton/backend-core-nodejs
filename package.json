@@ -9,6 +9,24 @@
       "core/*": [
         "./dist/core/*/index.d.ts"
       ],
+      "core/shared/infra/configs/env/aws/aws-s3-server-config": [
+        "./dist/core/shared/infra/configs/env/aws/aws-s3-server-config.d.ts"
+      ],
+      "core/shared/infra/configs/env/aws/aws-server-config": [
+        "./dist/core/shared/infra/configs/env/aws/aws-server-config.d.ts"
+      ],
+      "core/shared/infra/configs/env/database/database-server-config": [
+        "./dist/core/shared/infra/configs/env/database/database-server-config.d.ts"
+      ],
+      "core/shared/infra/configs/env/database/redis-server-config": [
+        "./dist/core/shared/infra/configs/env/database/redis-server-config.d.ts"
+      ],
+      "core/shared/infra/configs/env/messaging/rabbitmq-server-config": [
+        "./dist/core/shared/infra/configs/env/messaging/rabbitmq-server-config.d.ts"
+      ],
+      "core/shared/infra/configs/env/api-server-config": [
+        "./dist/core/shared/infra/configs/env/api-server-config.d.ts"
+      ],
       "nestjs/*": [
         "./dist/nestjs/*/index.d.ts"
       ]
@@ -19,6 +37,36 @@
       "types": "./dist/core/*/index.d.ts",
       "require": "./dist/core/*/index.js",
       "import": "./dist/core/*/index.js"
+    },
+    "./core/shared/infra/configs/env/aws/aws-s3-server-config": {
+      "types": "./dist/core/shared/infra/configs/env/aws/aws-s3-server-config.d.ts",
+      "require": "./dist/core/shared/infra/configs/env/aws/aws-s3-server-config.js",
+      "import": "./dist/core/shared/infra/configs/env/aws/aws-s3-server-config.js"
+    },
+    "./core/shared/infra/configs/env/aws/aws-server-config": {
+      "types": "./dist/core/shared/infra/configs/env/aws/aws-server-config.d.ts",
+      "require": "./dist/core/shared/infra/configs/env/aws/aws-server-config.js",
+      "import": "./dist/core/shared/infra/configs/env/aws/aws-server-config.js"
+    },
+    "./core/shared/infra/configs/env/database/database-server-config": {
+      "types": "./dist/core/shared/infra/configs/env/database/database-server-config.d.ts",
+      "require": "./dist/core/shared/infra/configs/env/database/database-server-config.js",
+      "import": "./dist/core/shared/infra/configs/env/database/database-server-config.js"
+    },
+    "./core/shared/infra/configs/env/database/redis-server-config": {
+      "types": "./dist/core/shared/infra/configs/env/database/redis-server-config.d.ts",
+      "require": "./dist/core/shared/infra/configs/env/database/redis-server-config.js",
+      "import": "./dist/core/shared/infra/configs/env/database/redis-server-config.js"
+    },
+    "./core/shared/infra/configs/env/messaging/rabbitmq-server-config": {
+      "types": "./dist/core/shared/infra/configs/env/messaging/rabbitmq-server-config.d.ts",
+      "require": "./dist/core/shared/infra/configs/env/messaging/rabbitmq-server-config.js",
+      "import": "./dist/core/shared/infra/configs/env/messaging/rabbitmq-server-config.js"
+    },
+    "./core/shared/infra/configs/env/api-server-config": {
+      "types": "./dist/core/shared/infra/configs/env/api-server-config.d.ts",
+      "require": "./dist/core/shared/infra/configs/env/api-server-config.js",
+      "import": "./dist/core/shared/infra/configs/env/api-server-config.js"
     },
     "./nestjs/*": {
       "types": "./dist/nestjs/*/index.d.ts",

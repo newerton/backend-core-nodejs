@@ -1,1 +1,1 @@
-export * from './rabbitmq-server-config';
+export { RabbitMQServerConfig } from './rabbitmq-server-config';
