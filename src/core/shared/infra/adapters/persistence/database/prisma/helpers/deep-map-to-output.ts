@@ -1,37 +1,42 @@
-import { Prisma } from '@prisma/client';
+const isDecimal = (value: unknown): boolean => {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    's' in value &&
+    'e' in value &&
+    'd' in value &&
+    Array.isArray((value as any).d) &&
+    typeof (value as any).s === 'number' &&
+    typeof (value as any).e === 'number'
+  );
+};
 
-type DecimalReplacer<T> = typeof Prisma extends { Decimal: unknown }
-  ? number
-  : T extends Array<infer U>
-    ? Array<DecimalReplacer<U>>
-    : T extends object
-      ? { [K in keyof T]: DecimalReplacer<T[K]> }
-      : T;
+const convert = <V>(value: V): any => {
+  if (isDecimal(value)) {
+    return Number(value.toString());
+  }
 
-export const deepMapToOutput = <T extends object>(
-  data: T,
-): DecimalReplacer<T> => {
-  const convert = <V>(value: V): DecimalReplacer<V> => {
-    if (value?.constructor?.name === 'Decimal') {
-      return Number(value) as DecimalReplacer<V>;
-    }
+  if (value instanceof Date) {
+    return value;
+  }
 
-    if (Array.isArray(value)) {
-      return value.map(convert) as DecimalReplacer<V>;
-    }
+  if (Array.isArray(value)) {
+    return value.map(convert);
+  }
 
-    if (typeof value === 'object' && value !== null) {
-      return Object.entries(value).reduce(
-        (acc, [key, val]) => ({
-          ...acc,
-          [key]: convert(val),
-        }),
-        {} as { [key: string]: unknown },
-      ) as DecimalReplacer<V>;
-    }
+  if (typeof value === 'object' && value !== null) {
+    return Object.entries(value).reduce(
+      (acc, [key, val]) => ({
+        ...acc,
+        [key]: convert(val),
+      }),
+      {} as { [key: string]: unknown },
+    );
+  }
 
-    return value as DecimalReplacer<V>;
-  };
+  return value;
+};
 
+export const deepMapToOutput = <T extends object>(data: T): any => {
   return convert(data);
 };
