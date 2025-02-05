@@ -11,17 +11,17 @@ const isDecimal = (value: unknown): boolean => {
   );
 };
 
-const convert = <V>(value: V): any => {
+const convert = <V, TOutput>(value: V): TOutput => {
   if (isDecimal(value)) {
-    return Number(value.toString());
+    return Number(value.toString()) as unknown as TOutput;
   }
 
   if (value instanceof Date) {
-    return value;
+    return value as unknown as TOutput;
   }
 
   if (Array.isArray(value)) {
-    return value.map(convert);
+    return value.map(convert) as unknown as TOutput;
   }
 
   if (typeof value === 'object' && value !== null) {
@@ -31,12 +31,12 @@ const convert = <V>(value: V): any => {
         [key]: convert(val),
       }),
       {} as { [key: string]: unknown },
-    );
+    ) as unknown as TOutput;
   }
 
-  return value;
+  return value as unknown as TOutput;
 };
 
-export const deepMapToOutput = <T extends object>(data: T): any => {
-  return convert(data);
+export const deepMapToOutput = <TOutput>(data: unknown): TOutput => {
+  return convert<unknown, TOutput>(data);
 };
