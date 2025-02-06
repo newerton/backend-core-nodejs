@@ -65,7 +65,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       status = 500;
     }
 
-    if (type === 'rpc') {
+    if (['graphql', 'rpc'].includes(type)) {
       throw Exception.new({
         code: errorResponse.code,
         message: errorResponse.message,
