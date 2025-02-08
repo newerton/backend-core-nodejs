@@ -2,11 +2,11 @@ import { Catch, ExceptionFilter, HttpException, Logger } from '@nestjs/common';
 
 import { Exception } from '../../../../core/shared/domain/exceptions';
 import {
-  ZodValidationHttpException,
+  ZodValidationException,
   ZodValidationType,
 } from '../../pipes/zod-validation.pipe';
 
-@Catch(ZodValidationHttpException)
+@Catch(ZodValidationException)
 export class ZodValidationExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException) {
     const status = exception.getStatus();
