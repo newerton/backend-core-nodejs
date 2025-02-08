@@ -4,6 +4,7 @@ import {
   Injectable,
   PipeTransform,
 } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import { Schema, ZodError } from 'zod';
 
 import { CreateValidationSchema } from '../validators/zod';
@@ -19,17 +20,17 @@ export type ZodValidationType = {
   }>;
 };
 
-@Injectable()
-export class ZodValidationPipe implements PipeTransform {
+class ZodValidationBasePipe {
   private readonly schema: Schema;
 
   constructor(schemaFactory: CreateValidationSchema) {
     this.schema = schemaFactory.createSchema();
   }
 
-  async transform(message: any): Promise<any> {
+  protected validate(message: any) {
     try {
-      await this.schema.parse(message);
+      this.schema.parse(message);
+      return null;
     } catch (err) {
       let errors = {
         message: err?.message || err,
@@ -46,15 +47,47 @@ export class ZodValidationPipe implements PipeTransform {
         }
       }
 
-      throw new ZodValidationException(errors);
+      return errors;
     }
-
-    return message;
   }
 }
 
-export class ZodValidationException extends HttpException {
+@Injectable()
+export class ZodValidationHttpPipe
+  extends ZodValidationBasePipe
+  implements PipeTransform
+{
+  transform(value: any): any {
+    const errors = this.validate(value);
+    if (errors) {
+      throw new ZodValidationHttpException(errors);
+    }
+    return value;
+  }
+}
+
+@Injectable()
+export class ZodValidationRpcPipe
+  extends ZodValidationBasePipe
+  implements PipeTransform
+{
+  transform(value: any): any {
+    const errors = this.validate(value);
+    if (errors) {
+      throw new RpcException({ ...errors, status: 'error', code: 422 });
+    }
+    return value;
+  }
+}
+
+export class ZodValidationHttpException extends HttpException {
   constructor(err: ZodValidationType) {
     super({ ...err }, HttpStatus.UNPROCESSABLE_ENTITY);
+  }
+}
+
+export class ZodValidationRpcException extends RpcException {
+  constructor(err: ZodValidationType) {
+    super({ ...err, status: 'error', code: 422 });
   }
 }

@@ -41,9 +41,8 @@ export async function prismaCreateWithTransactionHandler<
   } catch (error) {
     throw Exception.new({
       code: Code.INTERNAL_SERVER_ERROR.code,
-      message: errorMessage,
+      message: `${errorMessage}${error.code ? `: ${error.code}` : ''}`,
       data: { error, args },
     });
-    throw new Error('Erro ao criar registro no banco de dados.');
   }
 }
