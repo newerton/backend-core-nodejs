@@ -19,6 +19,9 @@ export class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
       const product = await this.stripe.products.create({
         name: productData.name,
         description: productData.description,
+        ...(productData.metadata
+          ? { metadata: productData.metadata }
+          : undefined),
       });
       return product.id;
     } catch {
@@ -35,6 +38,7 @@ export class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
         recurring: priceData.interval
           ? { interval: priceData.interval }
           : undefined,
+        ...(priceData.metadata ? { metadata: priceData.metadata } : undefined),
       });
       return price.id;
     } catch {
