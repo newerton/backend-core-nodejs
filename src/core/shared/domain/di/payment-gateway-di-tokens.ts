@@ -1,5 +1,5 @@
-export class PaymentGatewayDITokens {
-  public static readonly PaymentGatewayProvider: unique symbol = Symbol(
-    'PaymentGatewayProvider',
+export class PaymentGatewayAdapterDITokens {
+  public static readonly PaymentGatewayAdapter: unique symbol = Symbol(
+    'PaymentGatewayAdapter',
   );
 }

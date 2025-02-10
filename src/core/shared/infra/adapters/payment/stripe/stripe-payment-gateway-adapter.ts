@@ -1,13 +1,13 @@
 import Stripe from 'stripe';
 
+import { PaymentGatewayAdapter } from '../../../../domain/adapters';
 import {
-  PaymentGatewayProvider,
   PriceDataInput,
   ProductDataInput,
   SubscriptionDataInput,
-} from '../../../../domain/providers/payment-gateway-provider';
+} from '../../../../domain/adapters/payment-gateway-adapter';
 
-export class StripePaymentGatewayAdapter implements PaymentGatewayProvider {
+export class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
   private stripe: Stripe;
 
   constructor(apiKey: string) {

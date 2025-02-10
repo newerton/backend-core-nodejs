@@ -2,8 +2,10 @@ export type Interval = 'day' | 'week' | 'month' | 'year';
 
 export type ProductDataInput = {
   name: string;
-  description?: string;
-  metadata?: Record<string, string>;
+  description?: string | null;
+  metadata?: {
+    [name: string]: string | number | null;
+  };
 };
 
 export type PriceDataInput = {
@@ -11,7 +13,9 @@ export type PriceDataInput = {
   amount: number;
   currency: string;
   interval?: Interval;
-  metadata?: Record<string, string>;
+  metadata?: {
+    [name: string]: string | number | null;
+  };
 };
 
 export type SubscriptionDataInput = {
@@ -19,7 +23,7 @@ export type SubscriptionDataInput = {
   priceId: string;
 };
 
-export interface PaymentGatewayProvider {
+export interface PaymentGatewayAdapter {
   /**
    * Create a product in the payment gateway.
    * @param productData - Product data to be created.

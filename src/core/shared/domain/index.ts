@@ -1,3 +1,4 @@
+export * as adapters from './adapters';
 export * as api from './api';
 export * as di from './di';
 export * as errors from './errors';
