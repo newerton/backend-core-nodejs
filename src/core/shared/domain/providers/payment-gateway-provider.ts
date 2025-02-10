@@ -1,0 +1,45 @@
+export type Interval = 'day' | 'week' | 'month' | 'year';
+
+export type ProductDataInput = {
+  name: string;
+  description?: string;
+  metadata?: Record<string, string>;
+};
+
+export type PriceDataInput = {
+  productId: string;
+  amount: number;
+  currency: string;
+  interval?: Interval;
+  metadata?: Record<string, string>;
+};
+
+export type SubscriptionDataInput = {
+  customerId: string;
+  priceId: string;
+};
+
+export interface PaymentGatewayProvider {
+  /**
+   * Create a product in the payment gateway.
+   * @param productData - Product data to be created.
+   * @returns ID of the product created in the payment gateway.
+   */
+  createProduct(productDataInput: ProductDataInput): Promise<string>;
+
+  /**
+   * Create a price in the payment gateway.
+   * @param priceData - Price data to be created.
+   * @returns ID of the price created in the payment gateway.
+   */
+  createPrice(priceDataInput: PriceDataInput): Promise<string>;
+
+  /**
+   * Create a subscription in the payment gateway.
+   * @param subscriptionData - Subscription data to be created.
+   * @returns ID of the subscription created in the payment gateway.
+   */
+  createSubscription(
+    subscriptionDataInput: SubscriptionDataInput,
+  ): Promise<string>;
+}
