@@ -1,7 +1,10 @@
 export const omitAttributes = <T, Key extends keyof T, Output>(
   user: T | null,
   keys: Key[],
-): Output => {
+): Output | null => {
+  if (user === null) {
+    return null;
+  }
   if (!user) {
     return {} as Output;
   }
