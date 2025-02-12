@@ -104,7 +104,8 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "bcrypt": "^5.1.1"
+    "bcrypt": "^5.1.1",
+    "otpauth": "^9.3.6"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.7.1",
