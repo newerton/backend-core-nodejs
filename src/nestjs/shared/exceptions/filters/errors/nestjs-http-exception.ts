@@ -10,10 +10,14 @@ export const handleNestHttpException = (
   const findCode =
     Exception.findCodeByCodeValue(error.getStatus()) ||
     Code.INTERNAL_SERVER_ERROR;
+
+  const response = error.getResponse();
+  const data = (response as any).data;
+
   return CoreApiResponse.error(
     findCode.code < 100 ? Code.INTERNAL_SERVER_ERROR.code : findCode.code,
     findCode.error || Code.INTERNAL_SERVER_ERROR.error,
     error.message,
-    [],
+    Array.isArray(data) ? data : [data],
   );
 };

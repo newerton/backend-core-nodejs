@@ -3,7 +3,7 @@ import { CodeDescription } from '../../../../../core/shared/domain/errors';
 
 export type HttpExceptionFilterProperties = Error &
   CodeDescription & {
-    details: Array<{ [key: string]: string }>;
+    data: Array<{ [key: string]: string }>;
   };
 
 export const handleJSONException = (
@@ -14,10 +14,6 @@ export const handleJSONException = (
     code,
     error.error,
     error.message,
-    Array.isArray(error.details)
-      ? error.details
-      : error.details
-        ? [error.details]
-        : [],
+    Array.isArray(error.data) ? error.data : [error.data],
   );
 };
