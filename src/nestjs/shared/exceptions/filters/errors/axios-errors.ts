@@ -52,7 +52,7 @@ export const handleAxiosException = (
         Number(error.response.status),
         findCode.error,
         resultMessage,
-        [error.config],
+        Array.isArray(error.config) ? error.config : [error.config],
       );
     }
 
@@ -64,7 +64,7 @@ export const handleAxiosException = (
       findCode.code,
       findCode.error,
       String(error.response.data.message) || findCode.message,
-      [error.config],
+      Array.isArray(error.config) ? error.config : [error.config],
     );
   }
 };

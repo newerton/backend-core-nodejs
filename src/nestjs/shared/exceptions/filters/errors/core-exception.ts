@@ -8,6 +8,6 @@ export const handleCoreException = (
     error.code,
     error.error,
     error.message,
-    error.data ? [error.data] : [],
+    Array.isArray(error.data) ? error.data : error.data ? [error.data] : [],
   );
 };

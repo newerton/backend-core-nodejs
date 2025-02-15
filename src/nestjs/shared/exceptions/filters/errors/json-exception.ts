@@ -14,6 +14,10 @@ export const handleJSONException = (
     code,
     error.error,
     error.message,
-    error.details ? error.details : [],
+    Array.isArray(error.details)
+      ? error.details
+      : error.details
+        ? [error.details]
+        : [],
   );
 };
