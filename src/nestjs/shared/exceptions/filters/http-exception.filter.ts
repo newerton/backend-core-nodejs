@@ -7,15 +7,17 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
+import { handleAxiosException } from './errors/axios-errors';
+import { handleCoreException } from './errors/core-exception';
+import {
+  HttpExceptionFilterProperties,
+  handleJSONException,
+} from './errors/json-exception';
+import { handleNestHttpException } from './errors/nestjs-http-exception';
 import { CoreApiResponse } from '../../../../core/shared/domain/api';
-import { Code, CodeDescription } from '../../../../core/shared/domain/errors';
+import { Code } from '../../../../core/shared/domain/errors';
 import { Exception } from '../../../../core/shared/domain/exceptions';
 import { ApiServerConfig } from '../../../../core/shared/infra/configs/env/api/api-server-config';
-
-type HttpExceptionFilterProperties = Error &
-  CodeDescription & {
-    details: Array<{ [key: string]: string }>;
-  };
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -34,13 +36,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
       error.message,
     );
 
-    errorResponse = this.handleJSONException(
-      error as HttpExceptionFilterProperties,
-      errorResponse,
-    );
-    errorResponse = this.handleNestError(error, errorResponse);
-    errorResponse = this.handleCoreException(error, errorResponse);
-    errorResponse = this.handleAxiosException(error, errorResponse);
+    if (error instanceof HttpException) {
+      errorResponse = handleNestHttpException(error);
+    } else if (error instanceof Exception) {
+      errorResponse = handleCoreException(error);
+    } else if (typeof error === 'object') {
+      errorResponse = handleJSONException(
+        error as HttpExceptionFilterProperties,
+      );
+    } else if ((error as any).name === 'AxiosError') {
+      errorResponse = handleAxiosException(error);
+    }
 
     if (ApiServerConfig.LOG_ENABLE && request) {
       const message: string =
@@ -52,6 +58,22 @@ export class HttpExceptionFilter implements ExceptionFilter {
       Logger.error(message);
     }
 
+    const status = this.getErrorStatus(errorResponse);
+
+    if (['graphql', 'ws', 'rpc'].includes(type)) {
+      throw Exception.new({
+        code: errorResponse.code,
+        message: errorResponse.message,
+        data: errorResponse.details,
+      });
+    }
+
+    if (['http', 'express'].includes(type)) {
+      response.status(status).json(errorResponse);
+    }
+  }
+
+  private getErrorStatus(errorResponse: CoreApiResponse<unknown>): number {
     const validRanges = [
       [100, 511],
       [1000, 1004],
@@ -65,114 +87,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       status = 500;
     }
 
-    if (['graphql', 'rpc'].includes(type)) {
-      throw Exception.new({
-        code: errorResponse.code,
-        message: errorResponse.message,
-        data: { errorResponse },
-      });
-    }
-    response.status(status).send(errorResponse);
-  }
-
-  private handleNestError(
-    error: Error,
-    errorResponse: CoreApiResponse<unknown>,
-  ): CoreApiResponse<unknown> {
-    if (error instanceof HttpException) {
-      const findCode =
-        Exception.findCodeByCodeValue(error.getStatus()) ||
-        Code.INTERNAL_SERVER_ERROR;
-      errorResponse = CoreApiResponse.error(
-        findCode.code < 100 ? Code.INTERNAL_SERVER_ERROR.code : findCode.code,
-        findCode.error || Code.INTERNAL_SERVER_ERROR.error,
-        error.message,
-        undefined,
-      );
-    }
-    return errorResponse;
-  }
-
-  private handleCoreException(
-    error: Error,
-    errorResponse: CoreApiResponse<unknown>,
-  ): CoreApiResponse<unknown> {
-    if (error instanceof Exception) {
-      errorResponse = CoreApiResponse.error(
-        error.code,
-        error.error,
-        error.message,
-        error.data ? [error.data] : [],
-      );
-    }
-
-    return errorResponse;
-  }
-
-  private handleAxiosException(
-    error: any,
-    errorResponse: CoreApiResponse<unknown>,
-  ): CoreApiResponse<unknown> {
-    if (error.name === 'AxiosError') {
-      const findCode =
-        Exception.findCodeByCodeValue(Number(error.response.status)) ||
-        Code.INTERNAL_SERVER_ERROR;
-
-      const baseUrl = error.config.baseURL;
-      if (baseUrl.includes('ibm.com')) {
-        let resultMessage = 'IBM error message not found';
-
-        if (
-          'messageDescription' in error.response.data &&
-          'messageId' in error.response.data
-        ) {
-          resultMessage = `${error.response.data.messageId} ${error.response.data.messageDescription}`;
-        }
-
-        if ('error_description' in error.response.data) {
-          resultMessage = error.response.data.error_description;
-        }
-
-        if ('detail' in error.response.data) {
-          resultMessage = error.response.data.detail;
-        }
-
-        return CoreApiResponse.error(
-          Number(error.response.status),
-          findCode.error,
-          resultMessage,
-          [error.config],
-        );
-      }
-
-      delete error.config.baseURL;
-      delete error.config.method;
-      delete error.config.headers;
-
-      errorResponse = CoreApiResponse.error(
-        findCode.code,
-        findCode.error,
-        String(error.response.data.message) || findCode.message,
-        [error.config],
-      );
-    }
-    return errorResponse;
-  }
-
-  private handleJSONException(
-    error: HttpExceptionFilterProperties,
-    errorResponse: CoreApiResponse<unknown>,
-  ): CoreApiResponse<unknown> {
-    if (typeof error === 'object') {
-      const code = typeof error.code === 'number' ? error.code : 500;
-      errorResponse = CoreApiResponse.error(
-        code,
-        error.error,
-        error.message,
-        error.details ? error.details : [],
-      );
-    }
-
-    return errorResponse;
+    return status;
   }
 }
