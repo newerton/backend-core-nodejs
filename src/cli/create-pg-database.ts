@@ -1,19 +1,23 @@
 #!/usr/bin/env node
-
+import * as dotenv from 'dotenv';
 import { Client } from 'pg';
 
-async function createDatabasesIfNotExists(databases) {
-  const env = process.env.ENV;
+dotenv.config();
 
-  const host = process.env.DATABASE_HOST;
-  const port = process.env.DATABASE_PORT;
-  const user = process.env.DATABASE_USER;
-  const password = process.env.DATABASE_PASSWORD;
+async function createDatabasesIfNotExists(databases) {
+  const env = process.env.NODE_ENV || 'development';
+
+  const host = process.env.DB_HOST;
+  const port = process.env.DB_PORT;
+  const user = process.env.DB_USER;
+  const password = process.env.DB_PASSWORD;
 
   const hasAllEnvs = host && port && user && password;
 
   if (!hasAllEnvs) {
-    throw new Error('Missing database environment variables');
+    throw new Error(
+      'Missing database environment variables: DB_HOST, DB_PORT, DB_USER, DB_PASSWORD',
+    );
   }
 
   if (!env.startsWith('prod') && !env.startsWith('prd')) {
