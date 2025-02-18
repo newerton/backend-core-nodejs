@@ -29,7 +29,8 @@ export class ZodValidationPipe implements PipeTransform {
 
   async transform(message: any): Promise<any> {
     try {
-      await this.schema.parse(message);
+      const result = await this.schema.parseAsync(message);
+      return result;
     } catch (err) {
       let errors = {
         message: err?.message || err,
@@ -48,8 +49,6 @@ export class ZodValidationPipe implements PipeTransform {
 
       throw new ZodValidationException(errors);
     }
-
-    return message;
   }
 }
 
