@@ -3,6 +3,9 @@ import Stripe from 'stripe';
 import { PaymentGatewayAdapter } from '../../../../domain/adapters';
 import {
   CheckoutSubscriptionDataInput,
+  CheckoutSubscriptionDataOutput,
+  CreateCustomerDataInput,
+  CreateCustomerDataOutput,
   PriceDataInput,
   ProductDataInput,
   SubscriptionDataInput,
@@ -25,7 +28,8 @@ export class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
           : undefined),
       });
       return product.id;
-    } catch {
+    } catch (err) {
+      console.log(err);
       throw new Error('Error creating product');
     }
   }
@@ -42,7 +46,8 @@ export class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
         ...(priceData.metadata ? { metadata: priceData.metadata } : undefined),
       });
       return price.id;
-    } catch {
+    } catch (err) {
+      console.log(err);
       throw new Error('Error creating price');
     }
   }
@@ -56,26 +61,60 @@ export class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
         items: [{ price: subscriptionData.priceId }],
       });
       return subscription.id;
-    } catch {
+    } catch (err) {
+      console.log(err);
       throw new Error('Error creating subscription');
+    }
+  }
+
+  async createCustomer(
+    createCustomerDataInput: CreateCustomerDataInput,
+  ): Promise<CreateCustomerDataOutput> {
+    try {
+      const customer = await this.stripe.customers.create({
+        name: createCustomerDataInput.name,
+        email: createCustomerDataInput.email,
+        metadata: createCustomerDataInput.metadata,
+      });
+      return {
+        id: customer.id,
+      };
+    } catch (err) {
+      console.log(err);
+      throw new Error('Error creating customer');
+    }
+  }
+
+  async retrieveCustomer(id: string): Promise<unknown> {
+    try {
+      const customer = await this.stripe.customers.retrieve(id);
+      return customer;
+    } catch (err) {
+      console.log(err);
+      throw new Error('Error retrieving customer');
     }
   }
 
   async checkoutSubscription(
     checkoutSubscriptionDataInput: CheckoutSubscriptionDataInput,
-  ) {
+  ): Promise<CheckoutSubscriptionDataOutput> {
     try {
       const session = await this.stripe.checkout.sessions.create({
         mode: 'subscription',
         payment_method_types: ['card'],
+        customer: checkoutSubscriptionDataInput.customerId,
         success_url: checkoutSubscriptionDataInput.successUrl,
         cancel_url: checkoutSubscriptionDataInput.cancelUrl,
         line_items: [
           { price: checkoutSubscriptionDataInput.priceId, quantity: 1 },
         ],
       });
-      return session;
-    } catch {
+      return {
+        id: session.id,
+        url: session.url,
+      };
+    } catch (err) {
+      console.log(err);
       throw new Error('Error creating checkout session');
     }
   }

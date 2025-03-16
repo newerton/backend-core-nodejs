@@ -23,10 +23,28 @@ export type SubscriptionDataInput = {
   priceId: string;
 };
 
+export type CreateCustomerDataInput = {
+  name: string;
+  email: string;
+  metadata: {
+    [name: string]: string | number | null;
+  } | null;
+};
+
+export type CreateCustomerDataOutput = {
+  id: string;
+};
+
 export type CheckoutSubscriptionDataInput = {
   priceId: string;
+  customerId: string;
   successUrl: string;
   cancelUrl: string;
+};
+
+export type CheckoutSubscriptionDataOutput = {
+  id: string;
+  url: string;
 };
 
 export interface PaymentGatewayAdapter {
@@ -54,11 +72,27 @@ export interface PaymentGatewayAdapter {
   ): Promise<string>;
 
   /**
+   * Create a customer in the payment gateway.
+   * @param createCustomerDataInput - Customer data to be created.
+   * @returns ID of the customer created in the payment gateway.
+   */
+  createCustomer(
+    createCustomerDataInput: CreateCustomerDataInput,
+  ): Promise<CreateCustomerDataOutput>;
+
+  /**
+   * Retrieve a client from the payment gateway.
+   * @param id - ID of the client to be retrieved.
+   * @returns Data of the client retrieved.
+   */
+  retrieveCustomer(id: string): Promise<unknown>;
+
+  /**
    * Checkout a subscription in the payment gateway.
    * @param checkoutSubscriptionDataInput - Subscription checkout data to be used.
    * @returns The checkout session created in the payment gateway.
    */
   checkoutSubscription(
     checkoutSubscriptionDataInput: CheckoutSubscriptionDataInput,
-  );
+  ): Promise<CheckoutSubscriptionDataOutput>;
 }
