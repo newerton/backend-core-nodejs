@@ -15,7 +15,7 @@ export class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
   private stripe: Stripe;
 
   constructor(apiKey: string) {
-    this.stripe = new Stripe(apiKey, { apiVersion: '2025-01-27.acacia' });
+    this.stripe = new Stripe(apiKey, { apiVersion: '2025-02-24.acacia' });
   }
 
   async createProduct(productData: ProductDataInput): Promise<string> {
