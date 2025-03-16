@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 
 import { PaymentGatewayAdapter } from '../../../../domain/adapters';
 import {
+  CheckoutSubscriptionDataInput,
   PriceDataInput,
   ProductDataInput,
   SubscriptionDataInput,
@@ -57,6 +58,25 @@ export class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
       return subscription.id;
     } catch {
       throw new Error('Error creating subscription');
+    }
+  }
+
+  async checkoutSubscription(
+    checkoutSubscriptionDataInput: CheckoutSubscriptionDataInput,
+  ) {
+    try {
+      const session = await this.stripe.checkout.sessions.create({
+        mode: 'subscription',
+        payment_method_types: ['card'],
+        success_url: checkoutSubscriptionDataInput.successUrl,
+        cancel_url: checkoutSubscriptionDataInput.cancelUrl,
+        line_items: [
+          { price: checkoutSubscriptionDataInput.priceId, quantity: 1 },
+        ],
+      });
+      return session;
+    } catch {
+      throw new Error('Error creating checkout session');
     }
   }
 }

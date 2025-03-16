@@ -23,6 +23,12 @@ export type SubscriptionDataInput = {
   priceId: string;
 };
 
+export type CheckoutSubscriptionDataInput = {
+  priceId: string;
+  successUrl: string;
+  cancelUrl: string;
+};
+
 export interface PaymentGatewayAdapter {
   /**
    * Create a product in the payment gateway.
@@ -46,4 +52,13 @@ export interface PaymentGatewayAdapter {
   createSubscription(
     subscriptionDataInput: SubscriptionDataInput,
   ): Promise<string>;
+
+  /**
+   * Checkout a subscription in the payment gateway.
+   * @param checkoutSubscriptionDataInput - Subscription checkout data to be used.
+   * @returns The checkout session created in the payment gateway.
+   */
+  checkoutSubscription(
+    checkoutSubscriptionDataInput: CheckoutSubscriptionDataInput,
+  );
 }
