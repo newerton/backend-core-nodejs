@@ -1,4 +1,10 @@
+import Stripe from 'stripe';
+
 export type Interval = 'day' | 'week' | 'month' | 'year';
+
+export type ConstructEventOutputTypes = {
+  stripe: Stripe.Event;
+};
 
 export type ProductDataInput = {
   name: string;
@@ -40,6 +46,8 @@ export type CheckoutSubscriptionDataInput = {
   customerId: string;
   successUrl: string;
   cancelUrl: string;
+  startDate?: Date;
+  trialPeriodDays?: number;
 };
 
 export type CheckoutSubscriptionDataOutput = {
@@ -47,7 +55,15 @@ export type CheckoutSubscriptionDataOutput = {
   url: string;
 };
 
-export interface PaymentGatewayAdapter {
+export type ConstructEventDataInput = {
+  body: string | Buffer<ArrayBufferLike>;
+  sig: string;
+  secretKey: string;
+};
+
+export interface PaymentGatewayAdapter<
+  T extends keyof ConstructEventOutputTypes,
+> {
   /**
    * Create a product in the payment gateway.
    * @param productData - Product data to be created.
@@ -95,4 +111,8 @@ export interface PaymentGatewayAdapter {
   checkoutSubscription(
     checkoutSubscriptionDataInput: CheckoutSubscriptionDataInput,
   ): Promise<CheckoutSubscriptionDataOutput>;
+
+  constructEvent(
+    constructEventDataOutput: ConstructEventDataInput,
+  ): ConstructEventOutputTypes[T];
 }

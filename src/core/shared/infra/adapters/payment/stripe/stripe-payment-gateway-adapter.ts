@@ -1,17 +1,21 @@
+import dayjs from 'dayjs';
 import Stripe from 'stripe';
 
 import { PaymentGatewayAdapter } from '../../../../domain/adapters';
 import {
   CheckoutSubscriptionDataInput,
   CheckoutSubscriptionDataOutput,
+  ConstructEventDataInput,
+  ConstructEventOutputTypes,
   CreateCustomerDataInput,
   CreateCustomerDataOutput,
   PriceDataInput,
   ProductDataInput,
   SubscriptionDataInput,
 } from '../../../../domain/adapters/payment-gateway-adapter';
-
-export class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
+export class StripePaymentGatewayAdapter
+  implements PaymentGatewayAdapter<'stripe'>
+{
   private stripe: Stripe;
 
   constructor(apiKey: string) {
@@ -98,17 +102,28 @@ export class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
   async checkoutSubscription(
     checkoutSubscriptionDataInput: CheckoutSubscriptionDataInput,
   ): Promise<CheckoutSubscriptionDataOutput> {
+    const params: Stripe.Checkout.SessionCreateParams = {
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      customer: checkoutSubscriptionDataInput.customerId,
+      success_url: checkoutSubscriptionDataInput.successUrl,
+      cancel_url: checkoutSubscriptionDataInput.cancelUrl,
+      line_items: [
+        { price: checkoutSubscriptionDataInput.priceId, quantity: 1 },
+      ],
+    };
+
+    if (checkoutSubscriptionDataInput.startDate) {
+      params['subscription_data'] = {
+        billing_cycle_anchor: dayjs(
+          checkoutSubscriptionDataInput.startDate,
+        ).unix(),
+        proration_behavior: 'none',
+      };
+    }
+
     try {
-      const session = await this.stripe.checkout.sessions.create({
-        mode: 'subscription',
-        payment_method_types: ['card'],
-        customer: checkoutSubscriptionDataInput.customerId,
-        success_url: checkoutSubscriptionDataInput.successUrl,
-        cancel_url: checkoutSubscriptionDataInput.cancelUrl,
-        line_items: [
-          { price: checkoutSubscriptionDataInput.priceId, quantity: 1 },
-        ],
-      });
+      const session = await this.stripe.checkout.sessions.create(params);
       return {
         id: session.id,
         url: session.url,
@@ -117,5 +132,17 @@ export class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
       console.log(err);
       throw new Error('Error creating checkout session');
     }
+  }
+
+  constructEvent(
+    constructEventDataOutput: ConstructEventDataInput,
+  ): ConstructEventOutputTypes['stripe'] {
+    const event = this.stripe.webhooks.constructEvent(
+      constructEventDataOutput.body,
+      constructEventDataOutput.sig,
+      constructEventDataOutput.secretKey,
+    );
+
+    return event;
   }
 }
