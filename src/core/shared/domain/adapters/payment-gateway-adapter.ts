@@ -2,8 +2,17 @@ import Stripe from 'stripe';
 
 export type Interval = 'day' | 'week' | 'month' | 'year';
 
+export enum PaymentProvider {
+  stripe = 'stripe',
+  paypal = 'paypal',
+}
+
 export type ConstructEventOutputTypes = {
-  stripe: Stripe.Event;
+  [PaymentProvider.stripe]: Stripe.Event;
+};
+
+export type LocaleTypes = {
+  [PaymentProvider.stripe]: Stripe.Checkout.SessionCreateParams.Locale;
 };
 
 export type ProductDataInput = {
@@ -41,9 +50,10 @@ export type CreateCustomerDataOutput = {
   id: string;
 };
 
-export type CheckoutSubscriptionDataInput = {
+export type CheckoutSubscriptionDataInput<P extends keyof LocaleTypes> = {
   priceId: string;
   customerId: string;
+  locale: LocaleTypes[P];
   successUrl: string;
   cancelUrl: string;
   startDate?: Date;
@@ -65,7 +75,7 @@ export type ConstructEventDataInput = {
 };
 
 export interface PaymentGatewayAdapter<
-  T extends keyof ConstructEventOutputTypes,
+  P extends keyof ConstructEventOutputTypes,
 > {
   /**
    * Create a product in the payment gateway.
@@ -112,10 +122,10 @@ export interface PaymentGatewayAdapter<
    * @returns The checkout session created in the payment gateway.
    */
   checkoutSubscription(
-    checkoutSubscriptionDataInput: CheckoutSubscriptionDataInput,
+    checkoutSubscriptionDataInput: CheckoutSubscriptionDataInput<P>,
   ): Promise<CheckoutSubscriptionDataOutput>;
 
   constructEvent(
     constructEventDataOutput: ConstructEventDataInput,
-  ): ConstructEventOutputTypes[T];
+  ): ConstructEventOutputTypes[P];
 }

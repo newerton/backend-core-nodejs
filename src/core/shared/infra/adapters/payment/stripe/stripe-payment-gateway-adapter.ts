@@ -9,12 +9,13 @@ import {
   ConstructEventOutputTypes,
   CreateCustomerDataInput,
   CreateCustomerDataOutput,
+  PaymentProvider,
   PriceDataInput,
   ProductDataInput,
   SubscriptionDataInput,
 } from '../../../../domain/adapters/payment-gateway-adapter';
 export class StripePaymentGatewayAdapter
-  implements PaymentGatewayAdapter<'stripe'>
+  implements PaymentGatewayAdapter<PaymentProvider.stripe>
 {
   private stripe: Stripe;
 
@@ -100,11 +101,12 @@ export class StripePaymentGatewayAdapter
   }
 
   async checkoutSubscription(
-    checkoutSubscriptionDataInput: CheckoutSubscriptionDataInput,
+    checkoutSubscriptionDataInput: CheckoutSubscriptionDataInput<PaymentProvider.stripe>,
   ): Promise<CheckoutSubscriptionDataOutput> {
     const params: Stripe.Checkout.SessionCreateParams = {
       mode: 'subscription',
       payment_method_types: ['card'],
+      locale: checkoutSubscriptionDataInput.locale,
       customer: checkoutSubscriptionDataInput.customerId,
       success_url: checkoutSubscriptionDataInput.successUrl,
       cancel_url: checkoutSubscriptionDataInput.cancelUrl,
