@@ -122,6 +122,10 @@ export class StripePaymentGatewayAdapter
       };
     }
 
+    if (checkoutSubscriptionDataInput.metadata) {
+      params['metadata'] = checkoutSubscriptionDataInput.metadata;
+    }
+
     try {
       const session = await this.stripe.checkout.sessions.create(params);
       return {

@@ -48,6 +48,9 @@ export type CheckoutSubscriptionDataInput = {
   cancelUrl: string;
   startDate?: Date;
   trialPeriodDays?: number;
+  metadata: {
+    [key: string]: string | number;
+  };
 };
 
 export type CheckoutSubscriptionDataOutput = {
