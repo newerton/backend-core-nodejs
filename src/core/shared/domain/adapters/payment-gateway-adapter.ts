@@ -9,7 +9,7 @@ export type ConstructEventOutputTypes = {
 export type ProductDataInput = {
   name: string;
   description?: string | null;
-  metadata?: {
+  metadata: {
     [name: string]: string | number | null;
   };
 };
@@ -19,7 +19,7 @@ export type PriceDataInput = {
   amount: number;
   currency: string;
   interval?: Interval;
-  metadata?: {
+  metadata: {
     [name: string]: string | number | null;
   };
 };
@@ -48,7 +48,7 @@ export type CheckoutSubscriptionDataInput = {
   cancelUrl: string;
   startDate?: Date;
   trialPeriodDays?: number;
-  metadata?: {
+  metadata: {
     [key: string]: string | number;
   };
 };

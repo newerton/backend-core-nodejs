@@ -123,7 +123,9 @@ export class StripePaymentGatewayAdapter
     }
 
     if (checkoutSubscriptionDataInput.metadata) {
-      params['metadata'] = checkoutSubscriptionDataInput.metadata;
+      params['subscription_data'] = {
+        metadata: checkoutSubscriptionDataInput.metadata,
+      };
     }
 
     try {
