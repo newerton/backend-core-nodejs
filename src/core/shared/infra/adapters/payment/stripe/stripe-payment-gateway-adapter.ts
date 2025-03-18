@@ -115,18 +115,22 @@ export class StripePaymentGatewayAdapter
       ],
     };
 
-    if (checkoutSubscriptionDataInput.startDate) {
+    if (
+      checkoutSubscriptionDataInput.startDate ||
+      checkoutSubscriptionDataInput.metadata
+    ) {
       params['subscription_data'] = {
-        billing_cycle_anchor: dayjs(
-          checkoutSubscriptionDataInput.startDate,
-        ).unix(),
-        proration_behavior: 'none',
-      };
-    }
-
-    if (checkoutSubscriptionDataInput.metadata) {
-      params['subscription_data'] = {
-        metadata: checkoutSubscriptionDataInput.metadata,
+        ...(checkoutSubscriptionDataInput.startDate
+          ? {
+              billing_cycle_anchor: dayjs(
+                checkoutSubscriptionDataInput.startDate,
+              ).unix(),
+              proration_behavior: 'none',
+            }
+          : {}),
+        ...(checkoutSubscriptionDataInput.metadata
+          ? { metadata: checkoutSubscriptionDataInput.metadata }
+          : {}),
       };
     }
 
