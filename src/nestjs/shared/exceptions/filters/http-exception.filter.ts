@@ -69,7 +69,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     if (['http', 'express'].includes(type)) {
-      response.status(status).json(errorResponse);
+      if (response.raw) {
+        response.status(status).send(errorResponse);
+      } else {
+        response.status(status).json(errorResponse);
+      }
     }
   }
 
