@@ -1,6 +1,6 @@
 {
   "name": "@newerton/backend-core-nodejs",
-  "version": "1.0.43",
+  "version": "1.0.44",
   "author": "Newerton",
   "license": "MIT",
   "types": "dist/index.d.ts",
