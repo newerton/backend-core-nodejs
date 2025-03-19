@@ -108,7 +108,7 @@ export class StripePaymentGatewayAdapter
       payment_method_types: ['card'],
       locale: checkoutSubscriptionDataInput.locale,
       customer: checkoutSubscriptionDataInput.customerId,
-      success_url: checkoutSubscriptionDataInput.successUrl,
+      success_url: `${checkoutSubscriptionDataInput.successUrl}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: checkoutSubscriptionDataInput.cancelUrl,
       line_items: [
         { price: checkoutSubscriptionDataInput.priceId, quantity: 1 },
