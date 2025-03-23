@@ -1,14 +1,16 @@
-import dayjs from 'dayjs';
 import Stripe from 'stripe';
 
 import { PaymentGatewayAdapter } from '../../../../domain/adapters';
 import {
+  CheckoutSessionRetrieveDataInput,
+  CheckoutSessionRetrieveDataOutput,
   CheckoutSubscriptionDataInput,
   CheckoutSubscriptionDataOutput,
   ConstructEventDataInput,
   ConstructEventOutputTypes,
   CreateCustomerDataInput,
   CreateCustomerDataOutput,
+  InvoiceRetrieveDataInput,
   PaymentProvider,
   PriceDataInput,
   ProductDataInput,
@@ -72,14 +74,25 @@ export class StripePaymentGatewayAdapter
     }
   }
 
+  async retrieveSubscription(id: string): Promise<Stripe.Subscription> {
+    try {
+      const subscription = await this.stripe.subscriptions.retrieve(id);
+      return subscription;
+    } catch (err) {
+      console.log(err);
+      throw new Error('Error retrieving subscription');
+    }
+  }
+
   async createCustomer(
-    createCustomerDataInput: CreateCustomerDataInput,
+    createCustomerDataInput: CreateCustomerDataInput<PaymentProvider.stripe>,
   ): Promise<CreateCustomerDataOutput> {
     try {
       const customer = await this.stripe.customers.create({
         name: createCustomerDataInput.name,
         email: createCustomerDataInput.email,
         metadata: createCustomerDataInput.metadata,
+        preferred_locales: [createCustomerDataInput.locale],
       });
       return {
         id: customer.id,
@@ -90,7 +103,9 @@ export class StripePaymentGatewayAdapter
     }
   }
 
-  async retrieveCustomer(id: string): Promise<unknown> {
+  async retrieveCustomer(
+    id: string,
+  ): Promise<Stripe.Customer | Stripe.DeletedCustomer> {
     try {
       const customer = await this.stripe.customers.retrieve(id);
       return customer;
@@ -116,16 +131,13 @@ export class StripePaymentGatewayAdapter
     };
 
     if (
-      checkoutSubscriptionDataInput.startDate ||
+      checkoutSubscriptionDataInput.trialEnd ||
       checkoutSubscriptionDataInput.metadata
     ) {
       params['subscription_data'] = {
-        ...(checkoutSubscriptionDataInput.startDate
+        ...(checkoutSubscriptionDataInput.trialEnd
           ? {
-              billing_cycle_anchor: dayjs(
-                checkoutSubscriptionDataInput.startDate,
-              ).unix(),
-              proration_behavior: 'none',
+              trial_end: checkoutSubscriptionDataInput.trialEnd,
             }
           : {}),
         ...(checkoutSubscriptionDataInput.metadata
@@ -143,6 +155,114 @@ export class StripePaymentGatewayAdapter
     } catch (err) {
       console.log(err);
       throw new Error('Error creating checkout session');
+    }
+  }
+
+  async checkoutSessionRetrieve(
+    checkoutSessionRetrieveDataInput: CheckoutSessionRetrieveDataInput,
+  ): Promise<CheckoutSessionRetrieveDataOutput> {
+    try {
+      const session = await this.stripe.checkout.sessions.retrieve(
+        checkoutSessionRetrieveDataInput.sessionId,
+      );
+
+      const output: CheckoutSessionRetrieveDataOutput = {
+        id: session.id,
+        object: session.object,
+        mode: session.mode,
+        subtotal: session.amount_subtotal,
+        total: session.amount_total,
+        currency: session.currency,
+        totalDetails: session.total_details,
+        invoice: null,
+        customer: null,
+        subscription: null,
+      };
+
+      if (session.invoice) {
+        const invoice = await this.retrieveInvoice({
+          id: session.invoice as string,
+        });
+
+        const items = invoice.lines.data.map((item) => ({
+          id: item.id,
+          amount: item.amount,
+          currency: item.currency,
+          description: item.description,
+          period: {
+            start: item.period.start,
+            end: item.period.end,
+          },
+        }));
+
+        output.invoice = {
+          id: invoice.id,
+          number: invoice.number,
+          invoiceUrl: invoice.hosted_invoice_url,
+          invoicePdf: invoice.invoice_pdf,
+          items,
+        };
+      }
+
+      if (session.customer) {
+        const customer = (await this.retrieveCustomer(
+          session.customer as string,
+        )) as Stripe.Customer;
+        output.customer = {
+          id: customer.id,
+          name: customer.name,
+          email: customer.email,
+          metadata: customer.metadata,
+        };
+      }
+
+      if (session.subscription) {
+        const subscription = await this.retrieveSubscription(
+          session.subscription as string,
+        );
+
+        if (subscription.items) {
+          const hasSubscriptionItem = subscription.items.data.find(
+            (item) => item.object === 'subscription_item',
+          );
+
+          if (hasSubscriptionItem) {
+            output.subscription = {
+              id: subscription.id,
+              periodStart: subscription.current_period_start,
+              periodEnd: subscription.current_period_end,
+              metadata: subscription.metadata,
+              trialEnd: subscription.trial_end,
+              plan: {
+                id: hasSubscriptionItem.plan.id,
+                amount: hasSubscriptionItem.plan.amount,
+                currency: hasSubscriptionItem.plan.currency,
+                interval: hasSubscriptionItem.plan.interval,
+                metadata: hasSubscriptionItem.plan.metadata,
+              },
+            };
+          }
+        }
+      }
+
+      return output;
+    } catch (err) {
+      console.log(err);
+      throw new Error('Error retrieving checkout session');
+    }
+  }
+
+  async retrieveInvoice(
+    invoiceRetrieveDataInput: InvoiceRetrieveDataInput,
+  ): Promise<Stripe.Invoice> {
+    try {
+      const invoice = await this.stripe.invoices.retrieve(
+        invoiceRetrieveDataInput.id,
+      );
+      return invoice;
+    } catch (err) {
+      console.log(err);
+      throw new Error('Error retrieving invoice');
     }
   }
 

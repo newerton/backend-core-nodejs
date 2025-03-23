@@ -38,9 +38,10 @@ export type SubscriptionDataInput = {
   priceId: string;
 };
 
-export type CreateCustomerDataInput = {
+export type CreateCustomerDataInput<L extends keyof LocaleTypes> = {
   name: string;
   email: string;
+  locale: LocaleTypes[L];
   metadata: {
     [name: string]: string | number | null;
   } | null;
@@ -50,14 +51,17 @@ export type CreateCustomerDataOutput = {
   id: string;
 };
 
-export type CheckoutSubscriptionDataInput<P extends keyof LocaleTypes> = {
+export type InvoiceRetrieveDataInput = {
+  id: string;
+};
+
+export type CheckoutSubscriptionDataInput<L extends keyof LocaleTypes> = {
   priceId: string;
   customerId: string;
-  locale: LocaleTypes[P];
+  locale: LocaleTypes[L];
   successUrl: string;
   cancelUrl: string;
-  startDate?: Date;
-  trialPeriodDays?: number;
+  trialEnd?: number;
   metadata: {
     [key: string]: string | number;
   };
@@ -66,6 +70,62 @@ export type CheckoutSubscriptionDataInput<P extends keyof LocaleTypes> = {
 export type CheckoutSubscriptionDataOutput = {
   id: string;
   url: string;
+};
+
+export type CheckoutSessionRetrieveDataInput = {
+  sessionId: string;
+};
+
+export type CheckoutSessionRetrieveDataOutput = {
+  id: string;
+  object: string;
+  mode: string;
+  currency: string;
+  subtotal: number;
+  total: number;
+  totalDetails: unknown;
+  invoice?: {
+    id: string;
+    number: string;
+    invoiceUrl: string;
+    invoicePdf: string;
+    items: {
+      id: string;
+      amount: number;
+      currency: string;
+      description: string;
+      period: {
+        start: number;
+        end: number;
+      };
+    }[];
+  };
+  customer?: {
+    id: string;
+    name: string;
+    email: string;
+    metadata: {
+      [key: string]: string | number;
+    };
+  };
+  subscription?: {
+    id: string;
+    periodStart: number;
+    periodEnd: number;
+    trialEnd: number;
+    metadata: {
+      [key: string]: string | number;
+    };
+    plan: {
+      id: string;
+      amount: number;
+      currency: string;
+      interval: Interval;
+      metadata: {
+        [key: string]: string | number;
+      };
+    };
+  };
 };
 
 export type ConstructEventDataInput = {
@@ -101,12 +161,19 @@ export interface PaymentGatewayAdapter<
   ): Promise<string>;
 
   /**
+   * Retrieve a subscription from the payment gateway.
+   * @param id - ID of the subscription to be retrieved.
+   * @returns Data of the subscription retrieved.
+   */
+  retrieveSubscription(id: string): Promise<unknown>;
+
+  /**
    * Create a customer in the payment gateway.
    * @param createCustomerDataInput - Customer data to be created.
    * @returns ID of the customer created in the payment gateway.
    */
   createCustomer(
-    createCustomerDataInput: CreateCustomerDataInput,
+    createCustomerDataInput: CreateCustomerDataInput<P>,
   ): Promise<CreateCustomerDataOutput>;
 
   /**
@@ -125,6 +192,29 @@ export interface PaymentGatewayAdapter<
     checkoutSubscriptionDataInput: CheckoutSubscriptionDataInput<P>,
   ): Promise<CheckoutSubscriptionDataOutput>;
 
+  /**
+   * Retrieve a checkout session from the payment gateway.
+   * @param checkoutSessionRetrieveDataInput - Input data for retrieving the checkout session.
+   * @returns The checkout session retrieved from the payment gateway.
+   */
+  checkoutSessionRetrieve(
+    checkoutSessionRetrieveDataInput: CheckoutSessionRetrieveDataInput,
+  ): Promise<CheckoutSessionRetrieveDataOutput>;
+
+  /**
+   * Retrieve an invoice from the payment gateway.
+   * @param invoiceRetrieveDataInput - Input data for retrieving the invoice.
+   * @returns Data of the invoice retrieved.
+   */
+  retrieveInvoice(
+    invoiceRetrieveDataInput: InvoiceRetrieveDataInput,
+  ): Promise<unknown>;
+
+  /**
+   * Construct an event from the payment gateway.
+   * @param constructEventDataOutput - Data required to construct the event.
+   * @returns The constructed event output from the payment gateway.
+   */
   constructEvent(
     constructEventDataOutput: ConstructEventDataInput,
   ): ConstructEventOutputTypes[P];
