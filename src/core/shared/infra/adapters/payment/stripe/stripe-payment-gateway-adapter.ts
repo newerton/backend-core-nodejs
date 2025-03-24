@@ -268,6 +268,7 @@ export class StripePaymentGatewayAdapter
 
       if (!ApiServerConfig.ENV.startsWith('prod')) {
         console.dir(debug, { depth: 10 });
+        console.dir(output, { depth: 10 });
       }
 
       return output;
@@ -299,6 +300,10 @@ export class StripePaymentGatewayAdapter
       constructEventDataOutput.sig,
       constructEventDataOutput.secretKey,
     );
+
+    if (!ApiServerConfig.ENV.startsWith('prod')) {
+      console.dir(event, { depth: 10 });
+    }
 
     return event;
   }
