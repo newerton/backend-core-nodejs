@@ -118,13 +118,20 @@ export class StripePaymentGatewayAdapter
   async checkoutSubscription(
     checkoutSubscriptionDataInput: CheckoutSubscriptionDataInput<PaymentProvider.stripe>,
   ): Promise<CheckoutSubscriptionDataOutput> {
+    const successUrl = checkoutSubscriptionDataInput.successUrl.includes('?')
+      ? `${checkoutSubscriptionDataInput.successUrl}&session_id={CHECKOUT_SESSION_ID}`
+      : `${checkoutSubscriptionDataInput.successUrl}?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = checkoutSubscriptionDataInput.cancelUrl.includes('?')
+      ? `${checkoutSubscriptionDataInput.cancelUrl}&session_id={CHECKOUT_SESSION_ID}`
+      : `${checkoutSubscriptionDataInput.cancelUrl}?session_id={CHECKOUT_SESSION_ID}`;
+
     const params: Stripe.Checkout.SessionCreateParams = {
       mode: 'subscription',
       payment_method_types: ['card'],
       locale: checkoutSubscriptionDataInput.locale,
       customer: checkoutSubscriptionDataInput.customerId,
-      success_url: `${checkoutSubscriptionDataInput.successUrl}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: checkoutSubscriptionDataInput.cancelUrl,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       line_items: [
         { price: checkoutSubscriptionDataInput.priceId, quantity: 1 },
       ],
