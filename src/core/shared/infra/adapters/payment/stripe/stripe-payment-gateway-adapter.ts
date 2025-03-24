@@ -16,6 +16,7 @@ import {
   ProductDataInput,
   SubscriptionDataInput,
 } from '../../../../domain/adapters/payment-gateway-adapter';
+import { ApiServerConfig } from '../../../configs/env/api';
 export class StripePaymentGatewayAdapter
   implements PaymentGatewayAdapter<PaymentProvider.stripe>
 {
@@ -168,10 +169,18 @@ export class StripePaymentGatewayAdapter
   async checkoutSessionRetrieve(
     checkoutSessionRetrieveDataInput: CheckoutSessionRetrieveDataInput,
   ): Promise<CheckoutSessionRetrieveDataOutput> {
+    const debug = {
+      session: null,
+      invoice: null,
+      customer: null,
+      subscription: null,
+    };
+
     try {
       const session = await this.stripe.checkout.sessions.retrieve(
         checkoutSessionRetrieveDataInput.sessionId,
       );
+      debug.session = session;
 
       const output: CheckoutSessionRetrieveDataOutput = {
         id: session.id,
@@ -190,6 +199,7 @@ export class StripePaymentGatewayAdapter
         const invoice = await this.retrieveInvoice({
           id: session.invoice as string,
         });
+        debug.invoice = invoice;
 
         const items = invoice.lines.data.map((item) => ({
           id: item.id,
@@ -215,6 +225,7 @@ export class StripePaymentGatewayAdapter
         const customer = (await this.retrieveCustomer(
           session.customer as string,
         )) as Stripe.Customer;
+        debug.customer = customer;
         output.customer = {
           id: customer.id,
           name: customer.name,
@@ -227,6 +238,7 @@ export class StripePaymentGatewayAdapter
         const subscription = await this.retrieveSubscription(
           session.subscription as string,
         );
+        debug.subscription = subscription;
 
         if (subscription.items) {
           const hasSubscriptionItem = subscription.items.data.find(
@@ -250,6 +262,10 @@ export class StripePaymentGatewayAdapter
             };
           }
         }
+      }
+
+      if (!ApiServerConfig.ENV.startsWith('prod')) {
+        console.log(debug);
       }
 
       return output;
