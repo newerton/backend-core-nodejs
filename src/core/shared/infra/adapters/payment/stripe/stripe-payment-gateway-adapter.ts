@@ -190,6 +190,8 @@ export class StripePaymentGatewayAdapter
         total: session.amount_total,
         currency: session.currency,
         totalDetails: session.total_details,
+        status: session.status,
+        url: session.url,
         invoice: null,
         customer: null,
         subscription: null,
@@ -265,7 +267,7 @@ export class StripePaymentGatewayAdapter
       }
 
       if (!ApiServerConfig.ENV.startsWith('prod')) {
-        console.log(debug);
+        console.dir(debug, { depth: 10 });
       }
 
       return output;

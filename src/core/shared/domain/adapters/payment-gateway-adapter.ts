@@ -84,6 +84,8 @@ export type CheckoutSessionRetrieveDataOutput = {
   subtotal: number;
   total: number;
   totalDetails: unknown;
+  status: string;
+  url: string;
   invoice?: {
     id: string;
     number: string;
